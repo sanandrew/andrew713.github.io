@@ -1,0 +1,718 @@
+---
+title: "Project5"
+output: html_document
+
+---
+
+
+
+
+#Introduction: 
+The Dataset that I use was about the quality of red wine and how it affect by
+the elements that are in it. The dataset come from Cortez et al., who were 
+trying to find the preference of wine . What Interest me about the wine data how much elements affect the overall quality of the wine. My plan is to find out 
+more detail how the element affect the quality.
+
+
+#Problem : 
+I want to see how the element of the wine affect the quality of the 
+wine.
+
+```{r, message=FALSE, warning=FALSE, include=FALSE}
+
+library(dplyr)
+library(reshape2)
+library(data.table)
+library(scales)
+library(ggplot2)
+```
+
+#Univariate Plot
+
+
+The code Below insert the file wineQualityReds and place the infomation into 
+redwine.Also get some basic infomation about the Dimension , Structure and basic
+summary of the csv file. This give me a idea how to read the diagram and give me
+a range to look at for each column.
+```{r, include=FALSE}
+redwine<-read.csv("wineQualityReds.csv")
+```
+
+```{r, echo=FALSE}
+redwine <- subset(redwine, select = -X)
++dim(redwine)
+```
+
+
+```{r, echo=FALSE}
+
+
+ str(redwine)
+```
+
+
+```{r, echo=FALSE}
+summary(redwine)
+```
+
+
+
+
+
+The Histograms below show a representation of each column from the file:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = fixed.acidity))+ 
+  geom_histogram()+scale_x_continuous()
+```
+
+  The diagram above is a representation of the fixed.acidity column. Something 
+that interest me about he graph that it start around 4.5 and not 0. Second thing
+i notice that there no fixed.acidity around 15.5.
+
+
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = volatile.acidity ))+ 
+  geom_histogram()
+```
+  
+  The diagram above is representation of the volatile.acidity. The interesting 
+about their a big jumb around .3 volatile and  a missing volatile.acidity around
+1.3 and 1.5 volatile.acidity.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = citric.acid))+ 
+  geom_histogram()
+```
+ 
+  The histogram above show the representation for citric.acid something 
+interesting that their is a drop aroun .16 citric.acid but a big jump at .18
+citric.acid.Also a their no citric.acid between .8 and .97.
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = residual.sugar ))+ 
+  geom_histogram()
+```
+  
+  The graph above represent the residual.sugar column. The interesting that it 
+positive scew but after the residual.sugar reach 3 it don't increase and then it 
+reach 10 the tail start cutting.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = chlorides))+ 
+  geom_histogram()
+```
+  
+  The graph above represent chloride from the csv fie what interest me about 
+thisgraph that their great drop close to .1 and the chloride don't start at 0 
+but at .5.
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = free.sulfur.dioxide ))+ 
+  geom_histogram()
+```
+ 
+  The graph above is the a representation of free.sulfur.dioxide something i 
+notice is that their alot of point that their a drop and then it stay steady 
+then it increase a good example is around 18 to 28.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = total.sulfur.dioxide ))+ 
+  geom_histogram()
+```
+  
+   The graph above it a representation of  Total.Sulfur.Dioxide.The interesting
+   part of this graph it would been positive scew but it increase at 80 to 90 
+   total.sulfur.dioxide. We also see small  amout of total.sulfur.dioxide near
+   300 we can belive does are outliers .
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = density ))+ 
+  geom_histogram()
+```
+
+The graph above show a representation of density it a good representation of the 
+a Histogram.Something that i notice that the tail start at .990 and it make 
+sence since histogram don't touch zero.
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = pH))+ 
+  geom_histogram()
+```
+
+The graph above show a good representation of a Histogram for pH. Something I
+notice that near 2.6 ,3.8.,and 3.9 the graph cut off and then reappers. 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = sulphates))+ 
+  geom_histogram()
+```
+
+The histograph above it a representation of sulphates i notice that the graph 
+start closer to 0 and doesn't go pass 2 in suplate but reaches 355 in the count 
+around .6 sulphates 
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = alcohol ))+ 
+  geom_histogram()
+```
+
+The graph from about it a representation of alcohol something i notice that it 
+reach it peak around 9.2 and slowly start dropping. Another thing i notice their
+a outlier near 16 alcohol.
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(data = redwine , aes(x = quality ))+ 
+  geom_bar()
+```
+
+The Graph above is representation of the quality of the wine. Something that 
+suprise me that their not 0,1,9, and 10 quality of wine and most wine quality 
+are around 5 or 6. 
+
+
+################################################################################
+
+We are going to be looking into the Total sulfure dioxide and the level of
+concetration. If the level is greater than 50ppm it can be
+detect by nose and taste.In The line below you can see basic infomation about
+the So2.
+```{r, echo=FALSE}
+summary(redwine$free.sulfur.dioxide)
+```
+
+In the line below I see that 546 wines are greater than 50ppm so they have 
+SO2 and 1053 wines don't have SO2.
+```{r, echo=FALSE}
+dim(subset(redwine, total.sulfur.dioxide >50 ))
+```
+
+```{r, echo=FALSE}
+dim(subset(redwine, total.sulfur.dioxide <= 50 ))
+```
+
+
+```{r, eval=FALSE, include=FALSE}
+
+
+library(ggplot2)
+
+
+#ggplot(data = redwine , aes(x = total.sulfur.dioxide ))+ 
+#  geom_histogram()
+```
+
+
+
+```{r, echo=FALSE}
+ggplot(data = redwine , aes (x = total.sulfur.dioxide))+
+  geom_histogram(binwidth = 10)+scale_x_continuous()+
+  xlab("Total Sulfur.Dioxide(ppm)")
+```
+
+################################################################################
+After looking Total.Sulur.Dioxide i start wondering how that affect the overall
+quality of the wine.So i decide to facet_wrap that to my code. Which you can see
+below.
+
+                                                  
+```{r, echo=FALSE}
+ggplot(data = redwine , aes (x = total.sulfur.dioxide))+
+  geom_histogram(binwidth = 20)+scale_x_continuous()+ 
+  facet_wrap(~quality,ncol = 2)
+```
+
+
+From the data above i notice that most Total.SUlfur.Dioxide have a quality of 
+5 or a 6.
+
+The information below show Min,1st Qu,Median,Mean, 3rd Qu, and Max for each 
+quality type
+```{r, echo=FALSE}
+
+by(redwine$total.sulfur.dioxide, redwine$quality,summary)
+```
+```{r, echo=FALSE}
+ggplot(data = redwine , aes (x = total.sulfur.dioxide))+
+  geom_histogram(binwidth = 5)+scale_x_continuous()+ 
+  facet_wrap(~quality,scales= 'free')
+```
+
+The graph above is facet_wrap with a free scale giving me a better idea of 
+toal.sulfur.dioxide for each quality.Quality 5 and 6 a range from close to 0 
+to 150. While Quality 3, 4, and 8 have more a spread out Total.Sulfur.Dioxide
+
+```{r, echo=FALSE}
+ggplot(data= redwine, aes (x = as.factor(quality)  ,y= total.sulfur.dioxide))+
+  geom_boxplot()+xlab("Quality")+ylab("Total Sulfur Dioxide")
+```
+
+#Univeriate Analysis:
+###Structure of the Dataset:
+Variables :11 Obj:1599
+
+Fixed.acidity ,Volatile.acidity,citric.acid.,residual.sugar,chlorides,
+free.sulfur.dioxide,total.sulfur.dioxide.,density,pH,sulphates,alcohol,
+
+Quality : Ranking 0 -10 (Worst to best)
+
+Observation:
+The mean of th quality is around 5.6.
+
+Most wine have a quality of a 5 or a 6.
+
+Most wine use less residual.sugar(less than 2.5)
+
+Most have less than 100ppm (fix.acidty)the quality of wine is a 6
+
+
+###What is the most interesting from the dataset?
+Something that i notice in most of the data set of the wine have use less 
+element what i mean that elements like fixed.acidity , volatile.acidity,
+residual.sugar,chlorides,freesulfur.dioxide,toal.sulfur.dioxide,sulphates,and
+alcohol start with small quantity of the element but have a huge count and more
+the quantity of the element the less is the count. We can determin that each 
+element affect the quality of the wine by have different reaction with each 
+other if not having specific amount. 
+
+###What is something strange i see in the database?
+One strange thing i saw was citric.acid because when have close to 0 citric.acid
+it have high level count but then it slowly start to drop then near .18 
+citic.acid jump in count and then slowly start to decrease. I believe their 
+must be a element that citric acid reaction we if the quantity is measure 
+correctly. I use the correlation diagram to see which element have a strong
+relationship.
+
+###What can help specify my theory?
+Well i look at the total.sulfur.dioxide and quality above and see that their is 
+some kind relation with elements and quality if you look at the scale most
+total.sulfur.dioxide have less than 100 ppm very few have anything getter than
+than amount. I want to look at the two element and how they affect each other
+relationship that have a positive correlation and a negative correlation. 
+
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#ggplot(data = redwine, aes(x=quality))+
+#  geom_freqpoly()+scale_x_continuous()+xlab("Quality")+
+#  ylab("Total Sulfur Dioxide")
+```
+
+
+
+#Correlation
+After looking into the relationship between quality and Total.Sulfur.Dioxide
+I start wondering about what other elements have a correlation with each other.I 
+created two corrplot to give me a better idea of correlation between the 
+element. The reason i create two plot was that first plot with square gave me a 
+good idea how each correleation between each element but it still didn't tell me
+how close to -1 or 1 so i plot another so i can get those results.
+
+
+```{r, echo=FALSE}
+library(corrplot)
+rd <- cor(redwine )
+
+corrplot(rd, method = 'square' )
+corrplot(rd , method = 'number')
+
+
+```
+
+#Bivariate: 
+###Fix.acidity and Citric.Acid
+
+After looking at the corr.plot from above i notice that fixed.acidity which is 
+the acid involved in wine and citric.acid which is add freshness and flavour 
+have a correlation of .67.I want to see more about the relationship so i decide
+to create a scatter plot
+
+```{r, echo=FALSE}
+ggplot(aes(x = fixed.acidity, y = citric.acid),data= redwine)+
+  geom_point()
+```
+
+The first think i know notice that their alot of overplotting between 
+fixed.acidiy = 6 and 10. I'm going to use aplha to clean up the overplotting.
+
+
+```{r, echo=FALSE}
+ggplot(aes(x = fixed.acidity, y = citric.acid),data= redwine)+
+  geom_point(alpha= 1/10)+scale_x_continuous()
+```
+
+I Clean the overploting the first thing i notice is that most of the citric.acid
+and fixed.acidity is close to when fixed.acidity is close to 7 and citric.acid
+is  at 0,
+
+```{r, echo=FALSE}
+
+
+cor.test(redwine$citric.acid, redwine$fixed.acidity)
+
+```
+The information from above is the correlation between citric.acid and 
+fixed.acidity using the Peason method.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x = fixed.acidity, y = citric.acid),data= redwine)+
+  geom_point(alpha = 1/10)+xlim(4.5,quantile(redwine$fixed.acidity,.99))+
+  geom_smooth(method = 'lm', color = 'red')
+```
+
+
+
+
+```{r, echo=FALSE}
+quantile(redwine$fixed.acidity,.99)
+```
+In the graph above i want to see the 99 percent tile so i can have a better 
+idea of the graph without the outliers. The last fixed acidity that is in the 
+99% is 13.3 anything beyond that is most likely a outlier.
+```{r, echo=FALSE}
+
+fixed_group <- group_by(redwine,fixed.acidity)
+fixedsum    <- summarise(fixed_group,
+                         mean_acid =mean(citric.acid),
+                         median_acid = median(citric.acid),
+                         max_acid = max(citric.acid),
+                         min_acid = min(citric.acid),
+                         n = n())
+fixedsum <- arrange(fixedsum)
+head(fixedsum)
+```
+The table above is a group_by fixed.acity and citric.acid.I wanted to get the 
+mean ,median,max, min and total of the citric acid when fixed.acidity is at a 
+a specific point.
+
+
+
+
+
+###Fixed.Acidity and Density
+
+While working with Fixed.acidity I notice that Density have a correlation of .68
+and pH have correlation of -.67 with Fixed.acidity and I wanted to see more 
+about their relatioship.Density is the density of water and pH is how acidic the
+wine is. 
+
+```{r, echo=FALSE}
+ggplot(aes(x =fixed.acidity, y = density), data = redwine)+geom_point()
+```
+
+In the graph above I'm plotting between fixed.acidity and density. The problem
+with this is that there is overploating when fixed.acidity reaches 8. I'm going 
+to need to clean that before going any futher.
+
+
+```{r, echo=FALSE}
+ggplot(aes(x =fixed.acidity, y = density), data = redwine)+
+  geom_point(alpha = 1/10)
+```
+
+I clean the graph from above you know that most of the plot are around 
+fixed.acidity is around 8 and the density is around.9975.Now I'm wondering how
+the quality is affect.
+```{r, echo=FALSE}
+cor.test(redwine$density, redwine$fixed.acidity)
+```
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x = fixed.acidity, y = density),data= redwine)+
+  geom_point(alpha = 1/10)+xlim(4.5,quantile(redwine$fixed.acidity,.99))+
+  geom_smooth(method = 'lm', color = 'red')
+
+```
+
+
+
+###Fixed.Acidity and pH 
+
+After doing the correlation for  citric.acid and density seeing that have a 
+positive I want to compare it to element that have a negative correlation.I want
+to look at pH and fixed.acidity since i know that they have a negative 
+correlation.pH is the acid the wine is.
+
+```{r, echo=FALSE}
+ggplot(aes(x = fixed.acidity, y = pH),data= redwine)+
+  geom_point()
+```
+
+I create a scatter plot the first thing i notice is their alot overplotting 
+around 7 and 8. It better to clean the data so we can have a better 
+understanding of the graph. 
+
+
+```{r, echo=FALSE}
+ggplot(aes(x = fixed.acidity, y = pH),data= redwine)+
+  geom_point(alpha = 1/20)
+```
+
+Now that he graph is clean you notice that most of the point are around 7 for 
+fixed.acidity it seem that he relationship stay mostly in that area. 
+```{r, echo=FALSE}
+cor.test(redwine$pH, redwine$fixed.acidity)
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(aes(x = fixed.acidity, y = pH),data= redwine)+
+  geom_point(alpha = 1/10)+xlim(0,quantile(redwine$fixed.acidity,.99))+
+  geom_smooth(method = 'lm', color = 'red')
+```
+
+#Bivariate Analysis:
+###What are the interesting relationship did you see ?
+Their alot of overplotting closer to the center of the graph (Fixed.Acidity/
+Density and Fixed.Acidity/pH) .Fix.acidity and citric.acid is different because
+most of the overplotting was found when citric acid is 0. This could mean that
+fixed.acidity could have a strong relationship with citric.acid when it at 0.
+
+###Strongest Relationship found? 
+According to correlation diagram fixed.acidity have a strong relation with both
+citric.acid and denstiy at .67. When i look at fixed.acidity and density scatter
+plot graph it look like it have strong reaching since more of the scatter plot 
+overplotting each other but still have a few that are spread out.Also 
+fixed.acidity have a negative relation with pH when you look at the graph you 
+can tell since it going in a negative linear line.
+
+
+
+#Multivariate:
+###Fixed.Acidity and Citric.acid with quality 
+```{r, echo=FALSE}
+ggplot(aes(x = fixed.acidity, 
+           y = citric.acid , color = as.factor(quality)), 
+       data = redwine)+geom_point()
+
+
+
+ggplot(aes(x = fixed.acidity, 
+           y = citric.acid  , color = factor(quality)), 
+       data = redwine) +
+      geom_point(alpha = 0.8, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+theme_dark()
+```
+
+In the graph above i wanted to see the quality of the citric.acid and
+fixed.acidity the lighter the color the worst is the quality , the darker the 
+color the better the quality.SOmething i notice from this graph is that most
+of the 3 and 4 quality are below .25 ctiric acid and most 7 and 8 quality are 
+above .25 citric with 8 fixed.acidity
+
+The information below we can see how many of each type of quality is there 
+between 0 - 10.
+```{r, echo=FALSE}
+
+quality <- redwine$quality
+summary(quality)
+table(quality)
+
+redwine$quality_bucket <- cut(redwine$quality, breaks = c(2,4,5,6,8,9))
+
+```
+
+```{r, eval=FALSE, include=FALSE}
+#ggplot(aes(x = fixed.acidity, y = citric.acid),data= redwine)+
+#  geom_point(aes(color = quality_bucket))+geom_smooth(method = 'lm' , 
+#  color = 'red')
+ 
+```
+ 
+ In the infromation above i break down the quality to see how many are in each
+ quality type.  0,1,2,9,10 are not show because their no value in the data. 
+
+##Fixed.Acidity and Density with quality 
+
+```{r, echo=FALSE}
+
+ggplot(aes(x = fixed.acidity, 
+           y = density  , color = as.factor(quality)), 
+       data = redwine)+geom_point()
+
+
+
+ggplot(aes(x = fixed.acidity, 
+           y = density  , color = factor(quality)), 
+       data = redwine) +
+      geom_point(alpha = 0.8, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+theme_dark()
+```
+
+The graph above now show me the quality of the density and fixed.acity.Something
+I notice from the graph above is that closer you get to .995 from 1 in density
+the better quality get and most of them are between 6 and 8 fixed,acidity
+
+
+
+```{r, eval=FALSE, include=FALSE}
+#ggplot(aes(x =fixed.acidity, y = density), data = redwine)+
+#geom_point(aes(color = quality_bucket))+geom_smooth(method = 'lm', 
+#color = 'red')
+```
+
+
+
+
+##Fixed.Acidity and pH with quality 
+
+```{r, echo=FALSE}
+
+ggplot(aes(x = fixed.acidity, 
+           y = pH  , color = as.factor(quality)), 
+       data = redwine)+geom_point()
+
+
+ggplot(aes(x = fixed.acidity, 
+           y = pH  , color = factor(quality)), 
+       data = redwine) +
+      geom_point(alpha = 0.8, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+theme_dark()
+```
+
+I place quality into graph to see how pH and fixed.acidity affect the quality of 
+the wine sinne something i notice that i going in a negative direction and 
+quality 4,5,6,7,8 all intercept at 7 fixed.acidity and when pH reach around 3.8.
+This interesting because it mean that another element that not pH and fixed 
+affect the quality of the wine.
+
+
+#Multivariate Analysis:
+###What are the interesting relationship did you see ?
+Something that I notice between all three graph is that one point in each graph
+they have a intercept or come close to intercept with each other.Two of the 
+graph have positive linear slope but that can be due to a postive correlation 
+that they have with each other. Something i was suprise to see that all three
+have overplotting  instead a spread out relationship.
+
+###Strongest Relationship found?
+It between  fixed.acidity with citric.acid or with Density since their 
+correlation were the same. Since we add quality to the mix it just let us know 
+when does the quality of the wine are plotted between fixed.acidity with
+citric.acid or density.
+
+
+```{r, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#ggplot(aes(x = fixed.acidity, y = pH),data= redwine)+
+#  geom_point(aes(color = quality_bucket))+geom_smooth(method = 'lm' , 
+#  color = 'red')
+```
+
+
+
+
+
+
+#Three Interesting Graph
+Will working on the project I found these Three graph to be the most interesting
+
+##Graph 1:
+```{r, echo=FALSE}
+ggplot(data = redwine , aes (x = total.sulfur.dioxide ))+
+  geom_histogram(binwidth = 5)+scale_x_continuous()+ 
+  facet_wrap(~quality,scales= 'free')+
+  labs(title="Total Sulfur Dioxide fracet_wrap with Quality")+
+  xlab("Total Sulfur Dioxide units: mg /dm^3")
+```
+
+The reason i beleive this graph is import is because it show me it break down
+how total.sulfur.dioxide with the quality of the wine. When the quality is 3 
+most of the wine is less than 50ppm meaning now there no S02 in the wine. When 
+you get quality of the wine is 5 you that reach it peak near 25 but the tail
+slowly start dropping this can mean that SO2 have a higher detection.Lastly I 
+notice that their are no wine rating of 0,1,2,9,10.
+
+##Graph 2: 
+```{r, echo=FALSE}
+ggplot(aes(x = fixed.acidity, 
+           y = density  , color = factor(quality)), 
+       data = redwine) +
+      geom_point(alpha = 0.8, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))+
+  xlab("Fixed Acidity  Units: g /dm^3")+ylab("Density Units:g/m^3")+theme_dark()
+```
+
+In the graph above is important because it show how the density and Fixed 
+Acidity afffect the quality of the wine. Somthing I notice is when the Fixed 
+Acidity is between 13g/dm^3 and 14g/dm^3 the quality of the wine start to get to
+each other. If the sample was larger we could determine if it ever intercept 
+with each other. Another is the most the better quality wine is when the density 
+is .992g/m^3 and the worst is closer to .997 g/m^3.
+
+
+##Graph 3
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot(aes(x = fixed.acidity, y = citric.acid),data= redwine)+
+  geom_point(alpha = 1/10)+xlim(4.5,quantile(redwine$fixed.acidity,.99))+
+  geom_smooth(method = 'lm', color = 'red')+
+  labs(title = "How Citric.acid and Fixed.acidy affect Quality")+
+  ylab("Citric.Acid  Units :g /dm^3 ")+xlab("Fixed Acidity Units: g/dm^3")
+
+```
+
+The last graph is very import because it Bivariate between citric.acid and
+fixed.acidity. The reason this is important because it show the 99% of the graph
+removing the outliers. I use the alpha function to remove some of the 
+overplotting this show me that most of fixed.acidity is around 7.5 with a
+citric.acid of .25. We also that see that their a linear line that positve
+giving it a positive correlation.
+
+
+#Limitation:
+
+A couple of limitation for was understanding the each element and seeing how
+they affect the wine or each element. Luckly i saw that the file come with a
+explanation of each element but don't really give me a idea how each element 
+with each other. So i start with Total.Sulfur.Dioxide i know that it can affect
+the quality of the wine if the ppm is to high. I wanted to have a better idea 
+how each element relate to each other i decide to create 2 correlation graph 
+to have abetter idea.
+
+#Ideas:
+I had a couple ideas while working with these set of data. The first was data
+could contain infomation how well each wine sold and then compare it to the 
+quality of the wine and each element. The problem with this method is that maybe
+some wine are the same but sold at a different cost at different stores. Another
+is to see how Temperature affect the element and the overal quality of the wine.
+The problem is that i see that all the wine must have the same amount of time
+in that temperature it would be hard to tell because they might have diferent 
+makers.
+
+#Conclusion:
+This project help me understand the use of R and graph for data science.Graph 
+are really important to this field because it help the reader have a better 
+picture when you explain the research you have done. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

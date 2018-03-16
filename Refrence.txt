@@ -1,0 +1,4 @@
+https://s3.amazonaws.com/udacity-hosted-downloads/ud651/wineQualityInfo.txt
+http://www.r-graph-gallery.com/
+https://docs.google.com/document/d/1qEcwltBMlRYZT-l699-71TzInWfk4W9q5rTCSvDVMpc/pub?embedded=true
+https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html
